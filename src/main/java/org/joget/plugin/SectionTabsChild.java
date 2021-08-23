@@ -1,4 +1,4 @@
-package org.joget.marketplace;
+package org.joget.plugin;
 
 import java.io.IOException;
 import java.io.PrintWriter;

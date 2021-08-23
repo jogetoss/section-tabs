@@ -1,4 +1,4 @@
-package org.joget.marketplace;
+package org.joget.plugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
