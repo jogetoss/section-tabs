@@ -1,6 +1,6 @@
 # Description
 
-This repository is meant to serve as a general template for how to set up new repositories in the JogetOSS organization. 
+The Section Tab is a Form Element plugin that changes the display of a form's sections, originally from top to bottom, to a horizontal tabs type display.
 
 # Getting Help
 
