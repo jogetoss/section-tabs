@@ -30,7 +30,7 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
     
     @Override
     public String getVersion() {
-        return "7.0.5";
+        return "7.0.6";
     }
     
     @Override
