@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.form.lib.SelectBox;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
@@ -30,7 +31,7 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
     
     @Override
     public String getVersion() {
-        return "7.0.7";
+        return "7.0.8";
     }
     
     @Override
@@ -107,6 +108,12 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
     }
     
     @Override
+    public FormData formatDataForValidation(FormData formData) {
+        formData = addSelectFieldValuesToRequest(this, formData);
+        return formData;
+    }
+    
+    @Override
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FormData formData = new FormData();
         formData.setPrimaryKeyValue(StringUtil.escapeString(request.getParameter("id"), StringUtil.TYPE_HTML, null));
@@ -156,5 +163,31 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
         } else {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
+    }
+    
+    protected FormData addSelectFieldValuesToRequest(Element element, FormData formData) {
+        if (element instanceof SelectBox) {
+            String paramName = FormUtil.getElementParameterName(element);
+            String secName = FormUtil.getElementParameterName(this);
+            String[] loaded = formData.getRequestParameterValues(secName + "_loaded");
+
+            if (formData.getRequestParameter(paramName) == null && FormUtil.isFormSubmitted(element, formData)) {
+                String[] paramValues = FormUtil.getElementPropertyValues(element, formData);
+                if ("true".equals(loaded[0])) {
+                    formData.addRequestParameterValues(paramName, new String[]{""});
+                } else {
+                    formData.addRequestParameterValues(paramName, paramValues);
+                }
+            }
+        }
+        
+        // recurse into children
+        Collection<Element> children = element.getChildren(formData);
+        if (children != null) {
+            for (Element child : children) {
+                formData = addSelectFieldValuesToRequest(child, formData);
+            }
+        }
+        return formData;
     }
 }
