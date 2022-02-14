@@ -23,7 +23,7 @@ public class SectionTabs extends Element implements FormBuilderPaletteElement, F
 
     @Override
     public String getVersion() {
-        return "7.0.8";
+        return "7.0.9";
     }
 
     @Override

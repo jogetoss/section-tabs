@@ -31,7 +31,7 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
     
     @Override
     public String getVersion() {
-        return "7.0.8";
+        return "7.0.9";
     }
     
     @Override
@@ -173,10 +173,12 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
 
             if (formData.getRequestParameter(paramName) == null && FormUtil.isFormSubmitted(element, formData)) {
                 String[] paramValues = FormUtil.getElementPropertyValues(element, formData);
-                if ("true".equals(loaded[0])) {
-                    formData.addRequestParameterValues(paramName, new String[]{""});
-                } else {
-                    formData.addRequestParameterValues(paramName, paramValues);
+                if (loaded != null) {
+                    if ("true".equals(loaded[0])) {
+                        formData.addRequestParameterValues(paramName, new String[]{""});
+                    } else {
+                        formData.addRequestParameterValues(paramName, paramValues);
+                    }
                 }
             }
         }
