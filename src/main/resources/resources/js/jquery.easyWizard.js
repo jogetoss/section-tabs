@@ -70,8 +70,7 @@
                     $this.wrapInner('<div class="easyWizardWrapper" />');
                     $this.find('.easyWizardWrapper').width(thisSettings.width * thisSettings.steps);
                     $this.css({
-                        'position': 'relative',
-                        'overflow': 'hidden'
+                        'position': 'relative'
                     }).addClass('easyPager');
 
                     $stepsHtml = $('<ul class="easyWizardSteps">');
@@ -256,6 +255,7 @@
             }
 
             // Slide !
+            wizard = this;
             $activeStep.removeClass('active');
             $activeStep.find('input, textarea, select, button').attr('tabindex', '-1');
 
@@ -266,11 +266,12 @@
             
             var width = $($activeStep).width();
             
-
+            wizard.css({ overflow: 'hidden' });
             this.find('> .easyWizardWrapper').stop(true, true).animate({
                 'margin-left': width * (step - 1) * -1
             }, function () {
                 //$activeStep.css({ height: '1px' });
+                wizard.css({ overflow: 'unset' });
             });
 
             // Defines steps
