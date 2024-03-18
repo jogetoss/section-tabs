@@ -43,17 +43,19 @@
             arrSettings[this.index()] = settings;
             
             $(window).resize(function () {
-                var width = $('.easyWizardElement').parent().width();
-
-                $('.easyWizardElement').css("max-width", width);
-                $('.easyWizardWrapper').width(width * thisSettings.steps);
-                $('.step').each(function (i, obj) {
-                    $(obj).width(width);
-                });
-                
-                var currentStep = $('.easyWizardSteps > .current').attr('data-step');
-                var currentMarginLeft = width * (currentStep - 1) * -1
-                $('.easyWizardWrapper').css("margin-left",currentMarginLeft);
+                $('.easyWizardElement').each(function(){
+                    if($(this).parent().width() !=0){
+                        var width = $(this).parent().width();
+                        $(this).css("max-width", width);
+                        $('.easyWizardWrapper').width(width * thisSettings.steps);
+                        $(this).find('.step').each(function (i, obj) {
+                            $(obj).width(width);
+                        });
+                        var currentStep = $(this).find('.easyWizardSteps > .current').attr('data-step');
+                        var currentMarginLeft = width * (currentStep - 1) * -1;
+                        $(this).find('.easyWizardWrapper').css("margin-left",currentMarginLeft);
+                    }
+                });                
             });
 
             return this.each(function() {
