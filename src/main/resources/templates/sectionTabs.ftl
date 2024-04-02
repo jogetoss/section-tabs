@@ -63,7 +63,9 @@
             .tabs > .easyWizardSteps > li.current {color: #000; background: #eee; border-top-left-radius: 10px; border-top-right-radius: 10px; font-weight: bold;}
             .tabs > .easyWizardWrapperContainer > .easyWizardWrapper:after{content:""; clear:both;}
             .tabs > .easyWizardWrapper > .step.active {visibility: unset !important}
+            .tabs > .easyWizardWrapper > .step:not(.active) > .form-section-title {display: block !important; padding: 1px;}
             .tabs > .easyWizardWrapper > .step:not(.active) > .form-column {display: none}
+            .tabs > .easyWizardWrapper > .step:not(.active) > .subform-section-title {display: block !important; padding: 1px;}
             .tabs > .easyWizardWrapper > .step:not(.active) > .subform-column {display: none}
             .tabs > .easyWizardWrapper > .step{visibility: hidden; display:block !important; padding:0px !important; border:0px !important; clear: right !important; margin:0 !important; margin-top:0px !important; box-shadow:none !important; }
             .tabs > .easyWizardWrapperContainer > .easyWizardWrapper > .step_wrapper > .step{display:block !important; padding:0px !important;  margin:0 !important; margin-top:0px !important; box-shadow:none !important; clear: right !important; border: 0px !important;}
