@@ -47,7 +47,7 @@
                     if($(this).parent().width() !=0){
                         var width = $(this).parent().width();
                         $(this).css("max-width", width);
-                        $(this).find('.easyWizardWrapper').width(width * 10);
+                        $(this).find('.easyWizardWrapper').width(width * $(this).find('.easyWizardSteps')[0].childElementCount);
                         $(this).find('.step').each(function (i, obj) {
                             $(obj).width(width);
                         });
