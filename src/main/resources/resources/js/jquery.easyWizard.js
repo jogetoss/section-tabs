@@ -25,6 +25,8 @@
                 'submitButton': true,
                 'submitButtonText': 'Submit',
                 'submitButtonClass': '',
+                'rightToLeft': false, 
+
                 before: function(wizardObj, currentStepObj, nextStepObj) {},
                 after: function(wizardObj, prevStepObj, currentStepObj) {},
                 beforeSubmit: function(wizardObj) {
@@ -57,7 +59,7 @@
                     }
                 });                
             });
-
+           
             return this.each(function() {
                 thisSettings = settings;
 
@@ -77,25 +79,26 @@
 
                     $stepsHtml = $('<ul class="easyWizardSteps">');
 
-                    $steps.each(function(index) {
-                        step = index + 1;
-                        $(this).css({
-                            'float': 'left',
-                            'width': thisSettings.width,
-                            'height': 'auto'
-                        }).attr('data-step', step);
+                 $steps.each(function(index) {
+    step = index + 1;
+    var floatDirection = thisSettings.rightToLeft ? 'right' : 'left'; 
+    $(this).css({
+        'float': floatDirection, 
+        'width': thisSettings.width,
+        'height': 'auto'
+    }).attr('data-step', step);
 
                         if(!index) {
-                            $(this).addClass('active').css('height', '');
+        $(this).addClass('active').css('height', '');
                         }else {
-                            $(this).find('input, textarea, select, button').attr('tabindex', '-1');
-                        }
+        $(this).find('input, textarea, select, button').attr('tabindex', '-1');
+    }
 
                         //stepText = thisSettings.stepsText.replace('{n}', '<span>'+step+'</span>');
                         //stepText = stepText.replace('{t}', $(this).attr('data-step-title'));
-                        stepText = $(this).find("> .form-section-title span, > .subform-section-title span").text();
+    stepText = $(this).find("> .form-section-title span, > .subform-section-title span").text();
                         $stepsHtml.append('<li'+(!index?' class="current"':'')+' data-step="'+step+'">'+stepText+'</li>');
-                    });
+});
 
                     if(thisSettings.showSteps) {
                         $this.prepend($stepsHtml);

@@ -12,6 +12,7 @@ import org.joget.apps.form.model.FormBuilderPaletteElement;
 import org.joget.apps.form.model.FormContainer;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.commons.util.SetupManager;
 import org.joget.workflow.util.WorkflowUtil;
 
 public class SectionTabs extends Element implements FormBuilderPaletteElement, FormContainer {
@@ -93,7 +94,12 @@ public class SectionTabs extends Element implements FormBuilderPaletteElement, F
     }
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
-        String template = "sectionTabs.ftl";
+        String template = "sectionTabs.ftl"; 
+        SetupManager setupManager = (SetupManager) AppUtil.getApplicationContext().getBean("setupManager");
+        String rightToLeft = setupManager.getSettingValue("rightToLeft");
+
+        dataModel.put("rightToLeft", "true".equalsIgnoreCase(rightToLeft));
+
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;

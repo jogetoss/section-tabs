@@ -69,7 +69,8 @@
             .tabs > .easyWizardWrapper > .step:not(.active) > .subform-column {display: none}
             .tabs > .easyWizardWrapper > .step{visibility: hidden; display:block !important; padding:0px !important; border:0px !important; clear: right !important; margin:0 !important; margin-top:0px !important; box-shadow:none !important; }
             .tabs > .easyWizardWrapperContainer > .easyWizardWrapper > .step_wrapper > .step{display:block !important; padding:0px !important;  margin:0 !important; margin-top:0px !important; box-shadow:none !important; clear: right !important; border: 0px !important;}
-        </style>
+            .tabs.rtl > .easyWizardWrapper > .step.active {float: right !important;}
+</style>
         <script>
             $(document).ready(function(){
                 var originalChange = VisibilityMonitor.prototype.triggerChange;
@@ -78,6 +79,9 @@
                     originalChange(targetEl, names);
                     $(targetEl).trigger("section-visibility-control-changed");
                 };
+                if (${rightToLeft?string}) {
+                 $("#${elementParamName!}").addClass("rtl");
+                }    
             });
         </script>
     </#if>
