@@ -17,13 +17,42 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.Section;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.plugin.base.PluginWebSupport;
 
 
 public class SectionTabsChild extends Section implements PluginWebSupport{
+    protected Element wrappedSection;
+
+    public void setWrappedSection(Element section) {
+        this.wrappedSection = section;
+    }
+
+    public Element getWrappedSection() {
+        return wrappedSection;
+    }
+
+    protected Element getContentRoot() {
+        return wrappedSection != null ? wrappedSection : this;
+    }
+
+    @Override
+    public Collection<Element> getChildren() {
+        if (wrappedSection != null) {
+            return wrappedSection.getChildren();
+        }
+        return super.getChildren();
+    }
+
+    @Override
+    public Collection<Element> getChildren(FormData formData) {
+        if (wrappedSection != null) {
+            return wrappedSection.getChildren(formData);
+        }
+        return super.getChildren(formData);
+    }
+
     @Override
     public String getName() {
         return "SectionTabsChild";
@@ -51,9 +80,22 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
         dataModel.put("primaryKey", (formData.getPrimaryKeyValue() != null)?formData.getPrimaryKeyValue():"");
         dataModel.put("processId", (formData.getProcessId() != null)?formData.getProcessId():"");
         dataModel.put("activityId", (formData.getActivityId() != null)?formData.getActivityId():"");
+        ElementRepairUtil.repairElementTree(getContentRoot());
         return super.renderTemplate(formData, dataModel);
     }
-    
+
+    public String renderChild(Element child, FormData formData, boolean includeMetaData) {
+        if (child == null) {
+            return "";
+        }
+        try {
+            ElementRepairUtil.repairElementTree(child);
+            return child.render(formData, includeMetaData);
+        } catch (Throwable e) {
+            return "";
+        }
+    }
+
     public boolean isLoad(FormData formData) {
         String paramName = FormUtil.getElementParameterName(this);
         if ((FormUtil.isFormSubmitted(this, formData) && formData.getRequestParameter(paramName + "_loaded") != null) || formData.getFormResult("FORM_RESULT_LOAD_ALL_DATA") != null) {
@@ -64,16 +106,14 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
     
     public String getJson() {
         try {
+            Element jsonRoot = getContentRoot();
             if (getLoadBinder() == null) {
                 Form form = FormUtil.findRootForm(this);
                 setLoadBinder(form.getLoadBinder());
             }
-            //disable all section wizard in child
-            recursiveDisableSectionTab(this);
-            
-            return FormUtil.generateElementJson(this);
+            recursiveDisableSectionTab(jsonRoot);
+            return FormUtil.generateElementJson(jsonRoot);
         } catch (Exception e) {
-            LogUtil.error(getClassName(), e, null);
         }
         return "";
     }
@@ -137,22 +177,24 @@ public class SectionTabsChild extends Section implements PluginWebSupport{
             Form form = new Form();
             form.setProperty(FormUtil.PROPERTY_ID, StringUtil.escapeString(request.getParameter("_formDefId"), StringUtil.TYPE_HTML, null));
             form.setProperty(FormUtil.PROPERTY_TABLE_NAME, StringUtil.escapeString(request.getParameter("_formTableName"), StringUtil.TYPE_HTML, null));
-            Element section = FormUtil.parseElementFromJson(json);
-            
-            recursiveEnableSectionTab(section);
-            
+            Element parsed = FormUtil.parseElementFromJson(json);
+            ElementRepairUtil.repairElementTree(parsed);
+            SectionTabsChild section = new SectionTabsChild();
+            section.setWrappedSection(parsed);
+            section.setProperties(parsed.getProperties());
             section.setParent(form);
+
+            recursiveEnableSectionTab(parsed);
             Collection<Element> child = new ArrayList<Element>();
             child.add(section);
             form.setChildren(child);
             FormUtil.executeOptionBinders(form, formData);
             FormUtil.executeLoadBinders(form, formData);
-            
+
             for (Element e : section.getChildren(formData)) {
-                content += e.render(formData, false);
+                content += section.renderChild(e, formData, false);
             }
         } catch (Exception e) {
-            LogUtil.error(getClassName(), e, nonce);
         }
 
         if (content != null && !content.isEmpty()) {

@@ -47,16 +47,15 @@ public class SectionTabs extends Element implements FormBuilderPaletteElement, F
                 
                 Collection<Element> childs = new ArrayList<Element>();
 
-                for (String id : ids) {
+                for (String rawId : ids) {
+                    String id = rawId.trim();
+                    if (id.isEmpty()) {
+                        continue;
+                    }
                     Element s = getSection(form, id);
                     if (s != null) {
-                        Element sc = new SectionTabsChild();
+                        SectionTabsChild sc = createSectionTabsChild(s);
                         sc.setParent(this);
-                        sc.setChildren(s.getChildren());
-                        sc.setProperties(s.getProperties());
-                        sc.setCustomParameterName(s.getCustomParameterName());
-                        sc.setLoadBinder(s.getLoadBinder());
-                        sc.setStoreBinder(s.getStoreBinder());
                         if (getPropertyString("load_all").equals("true")) {
                             sc.setProperty("load", "true");
                         } else {
@@ -67,6 +66,7 @@ public class SectionTabs extends Element implements FormBuilderPaletteElement, F
                         }
                         form.getChildren().remove(s);
                         childs.add(sc);
+                    } else {
                     }
                 }
 
@@ -140,6 +140,16 @@ public class SectionTabs extends Element implements FormBuilderPaletteElement, F
         return "/plugin/org.joget.apps.form.lib.TextArea/images/textArea_icon.gif";
     }
     
+    protected SectionTabsChild createSectionTabsChild(Element source) {
+        SectionTabsChild sc = new SectionTabsChild();
+        sc.setWrappedSection(source);
+        sc.setProperties(source.getProperties());
+        sc.setCustomParameterName(source.getCustomParameterName());
+        sc.setLoadBinder(source.getLoadBinder());
+        sc.setStoreBinder(source.getStoreBinder());
+        return sc;
+    }
+
     protected boolean isFormBuilderActive() {
         HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
         return FormUtil.isFormBuilderActive() 
