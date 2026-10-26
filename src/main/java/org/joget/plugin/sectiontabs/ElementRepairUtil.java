@@ -1,4 +1,4 @@
-package org.joget.plugin;
+package org.joget.plugin.sectiontabs;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,15 +7,17 @@ import org.joget.apps.form.model.Column;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.service.FormUtil;
 
-final class ElementRepairUtil {
+public final class ElementRepairUtil {
 
     private static final String LEGACY_COLUMNS = "org.joget.apps.form.lib.Columns";
     private static final String LEGACY_COLUMN_CONTAINER = "org.joget.apps.form.lib.ColumnContainer";
+    // Referenced by name so this package never resolves classes through org.joget.plugin
+    private static final String LEGACY_COLUMNS_REPLACEMENT = "org.joget.plugin.LegacyColumns";
 
     private ElementRepairUtil() {
     }
 
-    static void repairElementTree(Element root) {
+    public static void repairElementTree(Element root) {
         if (root != null) {
             repairChildren(root);
         }
@@ -58,7 +60,7 @@ final class ElementRepairUtil {
                 return missing;
             }
 
-            json = json.replace(LEGACY_COLUMNS, LegacyColumns.class.getName());
+            json = json.replace(LEGACY_COLUMNS, LEGACY_COLUMNS_REPLACEMENT);
             json = json.replace(LEGACY_COLUMN_CONTAINER, Column.class.getName());
 
             json = json.replace("\"columns\":", "\"elements\":");

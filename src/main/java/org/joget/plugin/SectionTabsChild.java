@@ -20,6 +20,7 @@ import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.plugin.base.PluginWebSupport;
+import org.joget.plugin.sectiontabs.ElementRepairUtil;
 
 
 public class SectionTabsChild extends Section implements PluginWebSupport{
