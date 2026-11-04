@@ -29,3 +29,12 @@ Please note that all interactions fall under our [Code of Conduct](https://githu
     limitations under the License.
 
 NOTE: This software may depend on other packages that may be licensed under different open source licenses.
+
+## Regression repro app
+
+`APP_SectionTabsRepro-1.jwa` is a minimal app for checking Section Tabs against circular configurations.
+
+- **Bad (self-referencing tabs)** — a Section Tabs element placed inside `section_a` that lists `section_a` (and a missing `section_b`), twice. Before this fix (8.0.0 `setParent` re-parents the ancestor section's children; 9.0.5/9.0.6 instead drop the whole section) the parent chain becomes circular and the request spins forever in `FormUtil.findRootForm`. With the fix the element is ignored and the form renders normally.
+- **Good (own-section tabs)** — Section Tabs in its own section wrapping two earlier sections. Must still render as two tabs.
+
+Note that sections are parsed in order, so the sections listed in `sections` must appear **before** the Section Tabs element in the form.
